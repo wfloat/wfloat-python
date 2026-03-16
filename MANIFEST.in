@@ -1,0 +1,3 @@
+include README.md
+recursive-include _build_support *.py
+recursive-include python *.py

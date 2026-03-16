@@ -1,0 +1,11 @@
+.venv*/
+
+__pycache__/
+build/
+dist/
+python/wfloat.egg-info/
+python/wfloat/lib/*.so
+python/wfloat/lib/*.pyd
+python/wfloat/lib/*.dll
+python/wfloat/lib/*.dylib
+python/wfloat/lib/*.lib
