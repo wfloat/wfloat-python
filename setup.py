@@ -2,7 +2,6 @@
 
 import importlib.util
 import os
-import re
 from pathlib import Path
 
 import setuptools
@@ -34,6 +33,17 @@ def read_long_description() -> str:
     return (ROOT_DIR / "README.md").read_text(encoding="utf8")
 
 
+def read_package_version() -> str:
+    version_file = ROOT_DIR / "python" / "wfloat" / "_version.py"
+    namespace = {}
+    exec(version_file.read_text(encoding="utf8"), namespace)
+    version = namespace.get("__version__")
+    if not isinstance(version, str) or not version.strip():
+        raise RuntimeError(f"Could not determine package version from {version_file}")
+
+    return version.strip()
+
+
 def get_sherpa_onnx_source_dir() -> Path:
     env_dir = os.environ.get("WFLOAT_SHERPA_ONNX_SOURCE_DIR")
     if env_dir:
@@ -42,33 +52,9 @@ def get_sherpa_onnx_source_dir() -> Path:
     return (ROOT_DIR.parent.parent / "sherpa-onnx").resolve()
 
 
-def get_package_version() -> str:
-    env_version = os.environ.get("WFLOAT_PYTHON_VERSION")
-    if env_version:
-        return env_version
-
-    cmake_lists = get_sherpa_onnx_source_dir() / "CMakeLists.txt"
-    content = cmake_lists.read_text(encoding="utf8")
-    match = re.search(r'set\(SHERPA_ONNX_VERSION (.*)\)', content)
-    if not match:
-        raise RuntimeError(f"Could not determine version from {cmake_lists}")
-
-    version = match.group(1).strip('"')
-
-    cmake_args = os.environ.get("SHERPA_ONNX_CMAKE_ARGS", "")
-    if "-DSHERPA_ONNX_ENABLE_GPU=ON" in cmake_args:
-        version += "+cuda"
-
-    cuda_version = os.environ.get("SHERPA_ONNX_CUDA_VERSION", "")
-    if cuda_version:
-        version += cuda_version
-
-    return version
-
-
 setuptools.setup(
     name="wfloat",
-    version=get_package_version(),
+    version=read_package_version(),
     description="Low-level Python bindings for Wfloat TTS",
     long_description=read_long_description(),
     long_description_content_type="text/markdown",
@@ -79,6 +65,11 @@ setuptools.setup(
     package_dir={"": "python"},
     packages=setuptools.find_packages(where="python"),
     package_data={"wfloat": ["lib/*"], "wfloat.lib": ["*"]},
+    entry_points={
+        "console_scripts": [
+            "wfloat=wfloat._cli:main",
+        ]
+    },
     include_package_data=True,
     ext_modules=[cmake_extension("_sherpa_onnx")],
     cmdclass={"build_ext": BuildExtension, "bdist_wheel": bdist_wheel},

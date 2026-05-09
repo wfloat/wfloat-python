@@ -1,0 +1,68 @@
+name: Wheels
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+env:
+  SHERPA_ONNX_REF: cc9366cb03e06ebcc19a7f3cdfe4c23bf219ee0b
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux-x86_64
+            os: ubuntu-latest
+          - name: windows-x86_64
+            os: windows-latest
+          - name: macos-x86_64
+            os: macos-15-intel
+          - name: macos-arm64
+            os: macos-15
+
+    steps:
+      - name: Check out wfloat-python
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Check out sherpa-onnx
+        uses: actions/checkout@v6
+        with:
+          repository: wfloat/sherpa-onnx
+          ref: ${{ env.SHERPA_ONNX_REF }}
+          path: sherpa-onnx
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install cibuildwheel
+        run: python -m pip install --upgrade pip cibuildwheel==3.4.1
+
+      - name: Build wheels
+        env:
+          CIBW_ENVIRONMENT_PASS_LINUX: WFLOAT_SHERPA_ONNX_SOURCE_DIR MACOSX_DEPLOYMENT_TARGET
+          MACOSX_DEPLOYMENT_TARGET: "11.0"
+          WFLOAT_SHERPA_ONNX_SOURCE_DIR: ${{ runner.os == 'Linux' && '/project/sherpa-onnx' || format('{0}/sherpa-onnx', github.workspace) }}
+        run: python -m cibuildwheel --output-dir wheelhouse
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.name }}
+          path: wheelhouse/*.whl
