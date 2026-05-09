@@ -139,6 +139,7 @@ python -m twine upload --repository testpypi dist/*
   they are not already available locally.
 - `python -m build` without `WFLOAT_SHERPA_ONNX_SOURCE_DIR` may fail because
   the wheel build can run from a temporary unpacked source tree.
+- CI wheel builds use normal PEP 517 build isolation through `cibuildwheel`.
 - We currently publish wheels, not a self-contained source distribution. The
   source distribution path should only be documented after it no longer depends
   on an external sibling `sherpa-onnx` checkout.
