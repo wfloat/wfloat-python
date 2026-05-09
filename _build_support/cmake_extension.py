@@ -59,6 +59,16 @@ def _run(cmd):
     subprocess.run(cmd, check=True)
 
 
+def _remove_stale_runtime_files(lib_dir: Path) -> None:
+    if not lib_dir.is_dir():
+        return
+
+    for pattern in ("*.so", "*.pyd", "*.dll", "*.dylib", "*.lib", "*.exp"):
+        for candidate in lib_dir.glob(pattern):
+            if candidate.is_file():
+                candidate.unlink()
+
+
 class BuildExtension(build_ext):
     def build_extension(self, ext: setuptools.extension.Extension):
         del ext
@@ -67,9 +77,11 @@ class BuildExtension(build_ext):
         build_lib = Path(self.build_lib).resolve()
         install_dir = build_lib / "wfloat"
         source_dir = _get_sherpa_onnx_source_dir()
+        python_root_dir = Path(sys.prefix).resolve()
 
         build_temp.mkdir(parents=True, exist_ok=True)
         build_lib.mkdir(parents=True, exist_ok=True)
+        _remove_stale_runtime_files(install_dir / "lib")
 
         user_cmake_args = shlex.split(os.environ.get("SHERPA_ONNX_CMAKE_ARGS", ""))
         default_cmake_args = [
@@ -87,10 +99,25 @@ class BuildExtension(build_ext):
             "-DSHERPA_ONNX_ENABLE_TTS=ON",
             "-DSHERPA_ONNX_ENABLE_BINARY=OFF",
             "-DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF",
+            "-DPYBIND11_FINDPYTHON=ON",
         ]
 
         if not any(arg.startswith("-DPYTHON_EXECUTABLE=") for arg in user_cmake_args):
             default_cmake_args.append(f"-DPYTHON_EXECUTABLE={sys.executable}")
+        if not any(arg.startswith("-DPython_EXECUTABLE=") for arg in user_cmake_args):
+            default_cmake_args.append(f"-DPython_EXECUTABLE={sys.executable}")
+        if not any(arg.startswith("-DPython3_EXECUTABLE=") for arg in user_cmake_args):
+            default_cmake_args.append(f"-DPython3_EXECUTABLE={sys.executable}")
+        if not any(arg.startswith("-DPython_ROOT_DIR=") for arg in user_cmake_args):
+            default_cmake_args.append(f"-DPython_ROOT_DIR={python_root_dir}")
+        if not any(arg.startswith("-DPython3_ROOT_DIR=") for arg in user_cmake_args):
+            default_cmake_args.append(f"-DPython3_ROOT_DIR={python_root_dir}")
+        if platform.system() == "Darwin" and not any(
+            arg.startswith("-DCMAKE_OSX_ARCHITECTURES=") for arg in user_cmake_args
+        ):
+            machine = platform.machine().lower()
+            if machine in ("arm64", "x86_64"):
+                default_cmake_args.append(f"-DCMAKE_OSX_ARCHITECTURES={machine}")
 
         configure_cmd = [
             "cmake",
