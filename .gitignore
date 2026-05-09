@@ -1,5 +1,6 @@
 .venv*/
 build-*/
+out/
 
 __pycache__/
 build/
