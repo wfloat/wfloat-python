@@ -57,7 +57,7 @@ jobs:
       - name: Build wheels
         env:
           CIBW_ENVIRONMENT_PASS_LINUX: WFLOAT_SHERPA_ONNX_SOURCE_DIR MACOSX_DEPLOYMENT_TARGET
-          MACOSX_DEPLOYMENT_TARGET: "11.0"
+          MACOSX_DEPLOYMENT_TARGET: "13.4"
           WFLOAT_SHERPA_ONNX_SOURCE_DIR: ${{ runner.os == 'Linux' && '/project/sherpa-onnx' || format('{0}/sherpa-onnx', github.workspace) }}
         run: python -m cibuildwheel --output-dir wheelhouse
 

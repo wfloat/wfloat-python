@@ -5,4 +5,4 @@ build-backend = "setuptools.build_meta"
 [tool.cibuildwheel]
 build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-*"
 skip = "pp* *-win32 *-manylinux_i686 *-musllinux_*"
-test-command = 'python -c "from wfloat import version, write_wave; print(version)"'
+test-command = 'python -c "import wfloat; from wfloat._bindings import version, write_wave; print(wfloat.__version__, version)"'
