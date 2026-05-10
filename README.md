@@ -1,9 +1,18 @@
 # wfloat
 
-`wfloat` is the Python package for loading Wfloat-compatible speech models and
-generating audio files with `sherpa-onnx` under the hood.
+`wfloat` is a high-level Python wrapper around `sherpa-onnx` for loading
+Wfloat-compatible speech models and generating audio files.
 
-The intended high-level flow is:
+## Install
+
+Install a compatible `sherpa-onnx` wheel first, then install `wfloat`:
+
+```bash
+pip install https://github.com/wfloat/sherpa-onnx/releases/download/<tag>/<wheel>.whl
+pip install ./packages/wfloat-python
+```
+
+## Usage
 
 ```python
 import wfloat
@@ -19,38 +28,11 @@ result = model.generate(
 )
 
 result.audio.save("out.wav")
-
-print(result.audio.sample_rate)
-print(result.timeline.chunks[0].start_sec)
-```
-
-## Status
-
-The package now contains the high-level Python API shape:
-
-- `wfloat.load(...)`
-- `model.generate(...)`
-- `model.generate_dialogue(...)`
-- `result.audio.save(...)`
-- timing metadata via `result.timeline`
-
-The Python model asset endpoint still needs to return Python-compatible asset
-metadata for live downloads to work end to end.
-
-## CLI
-
-The package also exposes a `wfloat` CLI:
-
-```bash
-wfloat synth --text "Hello world." --out out.wav
 ```
 
 ## Notes
 
-- The package is designed to cache model assets locally.
-- Voice IDs can be passed as strings such as `narrator_woman` or as numeric
-  speaker IDs.
+- `wfloat` does not build or bundle native libraries.
+- Low-level bindings come from the installed `sherpa-onnx` wheel.
 - The public API is intentionally high-level; low-level native config objects
-  are not the primary integration surface.
-
-More implementation detail lives in [DESIGN.md](./DESIGN.md).
+  are re-exported only for advanced use.

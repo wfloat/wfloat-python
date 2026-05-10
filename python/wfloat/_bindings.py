@@ -1,5 +1,5 @@
 try:
-    from wfloat.lib._sherpa_onnx import (
+    from sherpa_onnx import (
         GeneratedAudio,
         GenerationConfig,
         OfflineTts,
@@ -15,8 +15,8 @@ try:
     )
 except ImportError as exc:
     raise ImportError(
-        "Failed to import the wfloat native extension. "
-        "Build the package from this repo or install a wheel for your platform."
+        "Failed to import sherpa-onnx. "
+        "Install a compatible sherpa-onnx wheel before using wfloat."
     ) from exc
 
 
@@ -34,4 +34,3 @@ __all__ = [
     "version",
     "write_wave",
 ]
-

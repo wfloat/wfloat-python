@@ -15,8 +15,8 @@ except ImportError as exc:
 def require_bindings() -> Any:
     if bindings is None:
         raise ImportError(
-            "Failed to import the wfloat native extension. "
-            "Install a platform wheel or build the package with sherpa-onnx support."
+            "Failed to import sherpa-onnx. "
+            "Install a compatible sherpa-onnx wheel before using wfloat."
         ) from _BINDINGS_IMPORT_ERROR
     return bindings
 
