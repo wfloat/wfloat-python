@@ -11,11 +11,7 @@ If you're building for the browser, use
 building for React Native, use
 [`@wfloat/react-native-wfloat`](https://github.com/wfloat/react-native-wfloat).
 
-Try it in the browser: https://wfloat.com/demo
-
-[sample.wav](https://github.com/user-attachments/files/27574802/sample.wav)
-
-[Sample dialogue](sample.wav)
+Browser demo to hear how it sounds: https://wfloat.com/demo
 
 ## Install
 
