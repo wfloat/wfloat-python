@@ -7,26 +7,26 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="wfloat")
     subparsers = parser.add_subparsers(dest="command")
 
-    synth = subparsers.add_parser("synth", help="Generate speech and write a WAV file.")
-    synth.add_argument("--model", default="wfloat/wfloat-tts", help="Model name to load.")
-    synth.add_argument("--text", required=True, help="Text to synthesize.")
-    synth.add_argument("--out", required=True, help="Output WAV path.")
-    synth.add_argument("--voice-id", default=None, help="Voice ID name or numeric SID.")
-    synth.add_argument("--emotion", default=None, help="Emotion name.")
-    synth.add_argument("--intensity", type=float, default=None, help="Emotion intensity.")
-    synth.add_argument("--speed", type=float, default=None, help="Speech speed.")
-    synth.add_argument(
+    generate = subparsers.add_parser("generate", help="Generate speech and write a WAV file.")
+    generate.add_argument("--model", default="wfloat/wfloat-tts", help="Model name to load.")
+    generate.add_argument("--text", required=True, help="Text to synthesize.")
+    generate.add_argument("--out", required=True, help="Output WAV path.")
+    generate.add_argument("--voice-id", default=None, help="Voice ID name or numeric SID.")
+    generate.add_argument("--emotion", default=None, help="Emotion name.")
+    generate.add_argument("--intensity", type=float, default=None, help="Emotion intensity.")
+    generate.add_argument("--speed", type=float, default=None, help="Speech speed.")
+    generate.add_argument(
         "--silence-padding-sec",
         type=float,
         default=None,
         help="Silence padding between generated sentence chunks.",
     )
-    synth.add_argument(
+    generate.add_argument(
         "--cache-dir",
         default=None,
         help="Optional override for the cache directory.",
     )
-    synth.add_argument(
+    generate.add_argument(
         "--force-download",
         action="store_true",
         help="Redownload model assets even if cached copies are present.",
@@ -49,7 +49,7 @@ def main(argv=None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
-    if args.command != "synth":
+    if args.command != "generate":
         parser.print_help()
         return 1
 

@@ -109,7 +109,7 @@ class TestWfloatSmoke(unittest.TestCase):
             git_date="today",
             git_sha1="abc123",
             prepare_wfloat_text=lambda text, *args, **kwargs: text,
-            version="1.12.23",
+            version="1.12.24",
             write_wave=lambda *args, **kwargs: None,
         )
 

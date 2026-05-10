@@ -1,7 +1,17 @@
 # Contributing
 
-`wfloat` is a pure Python package. Native code comes from the
-`wfloat-sherpa-onnx` dependency, which provides `import sherpa_onnx`.
+`wfloat` is the Python client for `wfloat-tts`, Wfloat's on-device text-to-speech
+model.
+
+Product context:
+
+- Homepage: https://wfloat.com
+- Docs: https://docs.wfloat.com
+- Model card and samples: https://huggingface.co/Wfloat/wfloat-tts
+- Web package: https://github.com/wfloat/wfloat-web
+- React Native package: https://github.com/wfloat/react-native-wfloat
+
+This repo should stay focused on the Python experience.
 
 ## Prerequisites
 
@@ -12,23 +22,23 @@
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install setuptools wheel build twine
+python3 -m pip install --upgrade pip
+python3 -m pip install setuptools wheel build twine
 ```
 
 Install `wfloat`:
 
 ```bash
-pip install -e .
+python3 -m pip install -e .
 ```
 
-That will also install the matching `wfloat-sherpa-onnx` dependency.
+That also installs the matching `wfloat-sherpa-onnx` dependency.
 
 ## Build release artifacts
 
 ```bash
 rm -rf build dist
-python -m build
+python3 -m build
 ```
 
 That produces:
@@ -41,20 +51,26 @@ That produces:
 Unit tests do not require `sherpa_onnx`:
 
 ```bash
-python -m unittest discover -s tests -v
+PYTHONPATH=python python3 -m unittest discover -s tests -v
 ```
 
 You can also run a smoke check:
 
 ```bash
-python -c "import sherpa_onnx, wfloat; print(wfloat.__version__)"
+python3 -c "import sherpa_onnx, wfloat; print(wfloat.__version__)"
 ```
 
 ## CI
 
-CI now:
+CI:
 
 - builds pure Python artifacts once
 - installs those artifacts on each target platform
 - relies on normal dependency resolution for `wfloat-sherpa-onnx`
 - runs the unit test suite and an integration smoke test
+
+## Notes for changes
+
+- Keep docs short and user-facing.
+- Describe this package as the Python way to run `wfloat-tts` locally.
+- If voices, emotions, or examples change, check the model card and docs first.
