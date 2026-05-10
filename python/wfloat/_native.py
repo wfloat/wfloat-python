@@ -15,8 +15,8 @@ except ImportError as exc:
 def require_bindings() -> Any:
     if bindings is None:
         raise ImportError(
-            "Failed to import sherpa-onnx. "
-            "Install a compatible sherpa-onnx wheel before using wfloat."
+            "Failed to import sherpa_onnx. "
+            "Reinstall wfloat so pip can install the matching wfloat-sherpa-onnx dependency."
         ) from _BINDINGS_IMPORT_ERROR
     return bindings
 

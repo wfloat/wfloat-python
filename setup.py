@@ -35,8 +35,10 @@ setuptools.setup(
     url="https://github.com/wfloat/wfloat-python",
     package_dir={"": "python"},
     packages=setuptools.find_packages(where="python"),
+    install_requires=[
+        "wfloat-sherpa-onnx==1.12.23",
+    ],
     include_package_data=True,
-    install_requires=["sherpa-onnx>=1.12.23"],
     entry_points={
         "console_scripts": [
             "wfloat=wfloat._cli:main",

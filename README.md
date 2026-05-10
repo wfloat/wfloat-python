@@ -5,10 +5,17 @@ Wfloat-compatible speech models and generating audio files.
 
 ## Install
 
-Install a compatible `sherpa-onnx` wheel first, then install `wfloat`:
+Install `wfloat` normally:
 
 ```bash
-pip install https://github.com/wfloat/sherpa-onnx/releases/download/<tag>/<wheel>.whl
+pip install wfloat
+```
+
+That will also install the matching `wfloat-sherpa-onnx` dependency from PyPI.
+
+When installing from this repo locally:
+
+```bash
 pip install ./packages/wfloat-python
 ```
 
@@ -33,6 +40,7 @@ result.audio.save("out.wav")
 ## Notes
 
 - `wfloat` does not build or bundle native libraries.
-- Low-level bindings come from the installed `sherpa-onnx` wheel.
+- Low-level bindings come from the installed `wfloat-sherpa-onnx` dependency,
+  which provides `import sherpa_onnx`.
 - The public API is intentionally high-level; low-level native config objects
   are re-exported only for advanced use.

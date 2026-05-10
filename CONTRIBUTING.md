@@ -1,13 +1,11 @@
 # Contributing
 
-`wfloat` is now a pure Python package. Native code comes from a separately
-installed `sherpa-onnx` wheel.
+`wfloat` is a pure Python package. Native code comes from the
+`wfloat-sherpa-onnx` dependency, which provides `import sherpa_onnx`.
 
 ## Prerequisites
 
 - Python 3.9+
-- a compatible `sherpa-onnx` wheel available from GitHub Releases or another
-  package source
 
 ## Local setup
 
@@ -18,17 +16,13 @@ python -m pip install --upgrade pip
 python -m pip install setuptools wheel build twine
 ```
 
-Install `sherpa-onnx` first if you want to exercise the low-level bindings:
-
-```bash
-pip install https://github.com/wfloat/sherpa-onnx/releases/download/<tag>/<wheel>.whl
-```
-
-Then install `wfloat`:
+Install `wfloat`:
 
 ```bash
 pip install -e .
 ```
+
+That will also install the matching `wfloat-sherpa-onnx` dependency.
 
 ## Build release artifacts
 
@@ -44,14 +38,13 @@ That produces:
 
 ## Tests
 
-Unit tests do not require `sherpa-onnx`:
+Unit tests do not require `sherpa_onnx`:
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-If you have installed a compatible `sherpa-onnx` wheel, you can also run a
-simple smoke check:
+You can also run a smoke check:
 
 ```bash
 python -c "import sherpa_onnx, wfloat; print(wfloat.__version__)"
@@ -63,7 +56,5 @@ CI now:
 
 - builds pure Python artifacts once
 - installs those artifacts on each target platform
-- runs the unit test suite
-
-After `sherpa-onnx` release assets are published, CI can add a platform-specific
-install step that pulls those wheel URLs before running integration smoke tests.
+- relies on normal dependency resolution for `wfloat-sherpa-onnx`
+- runs the unit test suite and an integration smoke test

@@ -1,5 +1,8 @@
 import hashlib
+import importlib
+import sys
 import tempfile
+import types
 import unittest
 import zipfile
 from pathlib import Path
@@ -94,6 +97,32 @@ class TestWfloatSmoke(unittest.TestCase):
 
         self.assertTrue(wav_bytes.startswith(b"RIFF"))
         self.assertGreater(len(wav_bytes), 44)
+
+    def test_bindings_import_without_generated_audio(self):
+        fake_module = types.SimpleNamespace(
+            GenerationConfig=object(),
+            OfflineTts=object(),
+            OfflineTtsConfig=object(),
+            OfflineTtsModelConfig=object(),
+            OfflineTtsWfloatModelConfig=object(),
+            WfloatPreparedText=object(),
+            git_date="today",
+            git_sha1="abc123",
+            prepare_wfloat_text=lambda text, *args, **kwargs: text,
+            version="1.12.23",
+            write_wave=lambda *args, **kwargs: None,
+        )
+
+        original_module = sys.modules.pop("wfloat._bindings", None)
+        try:
+            with mock.patch.dict(sys.modules, {"sherpa_onnx": fake_module}):
+                bindings = importlib.import_module("wfloat._bindings")
+                self.assertIs(bindings.OfflineTts, fake_module.OfflineTts)
+                self.assertNotIn("GeneratedAudio", bindings.__all__)
+        finally:
+            sys.modules.pop("wfloat._bindings", None)
+            if original_module is not None:
+                sys.modules["wfloat._bindings"] = original_module
 
     def test_generate_returns_audio_and_timeline(self):
         fake_native_tts = FakeNativeTts(sample_rate=10)
