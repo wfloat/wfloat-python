@@ -13,9 +13,7 @@ building for React Native, use
 
 Try it in the browser: https://wfloat.com/demo
 
-<audio controls src="./sample.wav">
-  <a href="./sample.wav">Sample dialogue</a>
-</audio>
+[sample.wav](https://github.com/user-attachments/files/27574802/sample.wav)
 
 [Sample dialogue](sample.wav)
 
