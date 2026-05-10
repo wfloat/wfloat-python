@@ -32,7 +32,7 @@ setuptools.setup(
     author="wfloat",
     license="MIT",
     python_requires=">=3.9",
-    url="https://github.com/wfloat/wfloat",
+    url="https://github.com/wfloat/wfloat-python",
     package_dir={"": "python"},
     packages=setuptools.find_packages(where="python"),
     include_package_data=True,
